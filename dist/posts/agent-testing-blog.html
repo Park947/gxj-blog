@@ -19,14 +19,14 @@
       <a class="brand" href="../index.html" aria-label="gxj 首页">gxj<span>.</span></a>
       <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
       <nav id="main-nav" aria-label="主导航"><a href="../index.html">首页</a><a href="../blog.html" class="active" aria-current="location">博客 <span class="nav-count">5</span></a><a href="../projects.html">项目</a></nav>
-      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true">↗</span></a>
+      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true"><svg class="icon-arrow icon-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 12h12m-5-5 5 5-5 5"/></svg></span></a>
     </header>
     <main class="article-main">
       <div class="article-toolbar">
         <a class="article-back" href="../blog.html"><span aria-hidden="true">←</span> 返回博客列表</a>
         <nav class="article-breadcrumb" aria-label="面包屑导航"><a href="../blog.html">技术博客</a><span aria-hidden="true">/</span><span>AI 测试</span></nav>
       </div>
-      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">03 / 05</span></p><h1>LangGraph Agent 测试笔记：视频创作 Agent 的状态、任务与服务化验收<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">AI 测试</span><time datetime="2026-05-13">2026.05.13</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true">↗</span></button></div></header>
+      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">03 / 05</span></p><h1>LangGraph Agent 测试笔记：视频创作 Agent 的状态、任务与服务化验收<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">AI 测试</span><time datetime="2026-05-13">2026.05.13</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></span></button></div></header>
       <div class="article-layout">
         <article class="article-body" id="article-content">
         <div class="post-container">
@@ -281,7 +281,7 @@ text_to_video 是否归一化成 submit_text_to_video
         <aside class="article-sidebar" aria-label="文章目录"><div class="article-toc"><p class="section-kicker">ON THIS PAGE / 目录</p><nav aria-label="文章章节"><a href="#section-02">一、当前 Agent 架构</a><a href="#section-03">二、LangGraph 主流程</a><a href="#section-04">三、Agent 能处理哪些用户输入</a><a href="#section-05">四、会话状态怎么保存</a><a href="#section-06">五、为什么 Agent 会慢</a><a href="#section-07">六、记忆写入不能阻塞用户响应</a><a href="#section-08">七、结构化输出要能容错</a><a href="#section-09">八、反思节点按需运行</a><a href="#section-10">九、前端流式输出流的是什么</a><a href="#section-11">十、测试重点</a><a href="#section-12">十一、下一步分布式演进</a><a href="#section-13">小结</a></nav><a class="toc-back" href="#top">回到文章顶部 ↑</a></div></aside>
       </div>
       <div class="article-reading-end"><span class="mono">END OF ARTICLE</span><a href="../blog.html">← 返回博客列表</a></div>
-      <nav class="article-adjacent" aria-label="其他文章"><a href="langgraph-browser-use-test-agent.html"><span class="section-kicker">← 上一篇</span><strong>LangGraph + browser-use：一个自然语言驱动的自动化测试 Agent 架构设计</strong><span aria-hidden="true">↗</span></a><a href="langsmith-testing-experience.html"><span class="section-kicker">下一篇 →</span><strong>LangSmith 测试经验：Agent 追踪与排查实战</strong><span aria-hidden="true">↗</span></a></nav>
+      <nav class="article-adjacent" aria-label="其他文章"><a href="langgraph-browser-use-test-agent.html"><span class="section-kicker">← 上一篇</span><strong>LangGraph + browser-use：一个自然语言驱动的自动化测试 Agent 架构设计</strong><span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a><a href="langsmith-testing-experience.html"><span class="section-kicker">下一篇 →</span><strong>LangSmith 测试经验：Agent 追踪与排查实战</strong><span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a></nav>
     </main>
     <footer class="site-footer site-footer-compact"><div class="footer-bottom"><span>© <span id="footer-year">2026</span> gxj · 测试与工程手记</span><span class="mono">BUILT WITH CURIOSITY.</span><a class="back-top" href="#top">回到顶部 <span aria-hidden="true">↑</span></a></div></footer>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

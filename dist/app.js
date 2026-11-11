@@ -34,7 +34,7 @@
       <a class="article-cover cover-${article.color}" href="${href}" tabindex="-1" aria-hidden="true">
         <div class="cover-caption"><span>${escapeHtml(article.label)}</span><span>${String(index + 1).padStart(2, "0")}</span></div>
         <div class="cover-art">${visualMarkup(article)}</div>
-        <span class="cover-bottom">GXJ / FIELD NOTES</span><span class="cover-arrow">↗</span>
+        <span class="cover-bottom">GXJ / FIELD NOTES</span><span class="cover-arrow"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></span>
       </a>
       <div class="article-info"><span class="article-category">${escapeHtml(article.category)}</span><time class="article-date" datetime="${article.date}">${dateLabel(article.date)}</time></div>
       <h3><a href="${href}">${title}</a></h3>
@@ -84,6 +84,12 @@
     }
   });
   let scrollPending = false;
+  function updateHomeViewport() {
+    if (document.body.classList.contains("home-page") && !CSS.supports("height", "100dvh")) {
+      document.body.style.setProperty("--home-viewport-height", `${innerHeight}px`);
+    }
+  }
+
   function updateScroll() {
     const available = document.documentElement.scrollHeight - innerHeight;
     document.getElementById("reading-progress").style.width = `${available > 0 ? Math.min(100, scrollY / available * 100) : 0}%`;
@@ -97,6 +103,7 @@
   }, { passive: true });
   addEventListener("resize", () => {
     if (innerWidth > 640) setMenu(false);
+    updateHomeViewport();
     updateScroll();
   });
   addEventListener("hashchange", syncRoute);
@@ -105,5 +112,6 @@
   document.querySelector(".nav-count").textContent = articles.length;
   renderArticles();
   syncRoute();
+  updateHomeViewport();
   updateScroll();
 })();

@@ -17,6 +17,8 @@ SLUGS = [
     "langgraph-langchain-learning-notes",
 ]
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+ARROW_UP_RIGHT = '<svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg>'
+NAV_ARROW_UP_RIGHT = '<svg class="icon-arrow icon-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 12h12m-5-5 5 5-5 5"/></svg>'
 
 
 class ArticleParser(HTMLParser):
@@ -104,7 +106,7 @@ def load_article(slug):
 
 
 def article_link(article, label):
-    return f'<a href="{article["slug"]}.html"><span class="section-kicker">{label}</span><strong>{html.escape(article["title"])}</strong><span aria-hidden="true">↗</span></a>'
+    return f'<a href="{article["slug"]}.html"><span class="section-kicker">{label}</span><strong>{html.escape(article["title"])}</strong><span aria-hidden="true">{ARROW_UP_RIGHT}</span></a>'
 
 
 def render_article(article, index, articles):
@@ -138,14 +140,14 @@ def render_article(article, index, articles):
       <a class="brand" href="../index.html" aria-label="gxj 首页">gxj<span>.</span></a>
       <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
       <nav id="main-nav" aria-label="主导航"><a href="../index.html">首页</a><a href="../blog.html" class="active" aria-current="location">博客 <span class="nav-count">{len(articles)}</span></a><a href="../projects.html">项目</a></nav>
-      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true">↗</span></a>
+      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true">{NAV_ARROW_UP_RIGHT}</span></a>
     </header>
     <main class="article-main">
       <div class="article-toolbar">
         <a class="article-back" href="../blog.html"><span aria-hidden="true">←</span> 返回博客列表</a>
         <nav class="article-breadcrumb" aria-label="面包屑导航"><a href="../blog.html">技术博客</a><span aria-hidden="true">/</span><span>{category}</span></nav>
       </div>
-      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">{index + 1:02d} / {len(articles):02d}</span></p><h1>{title}<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">{category}</span><time datetime="{date}">{date.replace("-", ".")}</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true">↗</span></button></div></header>
+      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">{index + 1:02d} / {len(articles):02d}</span></p><h1>{title}<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">{category}</span><time datetime="{date}">{date.replace("-", ".")}</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true">{ARROW_UP_RIGHT}</span></button></div></header>
       <div class="article-layout">
         <article class="article-body" id="article-content">{article["body"]}</article>
         <aside class="article-sidebar" aria-label="文章目录"><div class="article-toc"><p class="section-kicker">ON THIS PAGE / 目录</p><nav aria-label="文章章节">{heading_links}</nav><a class="toc-back" href="#top">回到文章顶部 ↑</a></div></aside>

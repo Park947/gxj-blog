@@ -19,14 +19,14 @@
       <a class="brand" href="../index.html" aria-label="gxj 首页">gxj<span>.</span></a>
       <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
       <nav id="main-nav" aria-label="主导航"><a href="../index.html">首页</a><a href="../blog.html" class="active" aria-current="location">博客 <span class="nav-count">5</span></a><a href="../projects.html">项目</a></nav>
-      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true">↗</span></a>
+      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true"><svg class="icon-arrow icon-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 12h12m-5-5 5 5-5 5"/></svg></span></a>
     </header>
     <main class="article-main">
       <div class="article-toolbar">
         <a class="article-back" href="../blog.html"><span aria-hidden="true">←</span> 返回博客列表</a>
         <nav class="article-breadcrumb" aria-label="面包屑导航"><a href="../blog.html">技术博客</a><span aria-hidden="true">/</span><span>AI Agent</span></nav>
       </div>
-      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">01 / 05</span></p><h1>AI MV Agent 架构介绍与技术实现<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">AI Agent</span><time datetime="2026-06-10">2026.06.10</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true">↗</span></button></div></header>
+      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">01 / 05</span></p><h1>AI MV Agent 架构介绍与技术实现<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">AI Agent</span><time datetime="2026-06-10">2026.06.10</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></span></button></div></header>
       <div class="article-layout">
         <article class="article-body" id="article-content">
         <div class="post-container">
@@ -1621,7 +1621,7 @@ characterSettings
         <aside class="article-sidebar" aria-label="文章目录"><div class="article-toc"><p class="section-kicker">ON THIS PAGE / 目录</p><nav aria-label="文章章节"><a href="#section-02">1. 总体架构</a><a href="#section-03">2. 为什么 LangGraph 主图很短</a><a href="#section-04">3. 状态机设计</a><a href="#section-05">4. 路由层：把自然语言变成业务 action</a><a href="#section-06">5. action 到 node 的映射</a><a href="#section-07">6. 阶段守卫：router 不能被完全信任</a><a href="#section-08">7. 阶段节点注册表：JSON 契约的唯一事实来源</a><a href="#section-09">8. 如何控制 LLM 只输出 JSON</a><a href="#section-15">9. 修改已有产物：不是 patch，而是完整重写 + 校验</a><a href="#section-16">10. 付费/耗时任务的二次确认</a><a href="#section-17">11. 异步任务：Agent 不直接等外部生成完成</a><a href="#section-18">12. 会话记忆：session + messages + artifacts</a><a href="#section-19">13. 响应打包：内部 state 和前端协议分离</a><a href="#section-20">14. 流式接口</a><a href="#section-21">15. Skill Prompt 和 few-shot</a><a href="#section-22">16. 模板检索层：从完整案例切 chunk，再按标签注入专家节点</a><a href="#section-29">17. 语言和本地化控制</a><a href="#section-30">18. 为什么要把 route 字段和 card 字段隔离</a><a href="#section-31">19. 一个完整例子</a><a href="#section-32">20. 扩展一个新阶段应该改哪里</a><a href="#section-33">21. 这套架构的几个设计取舍</a><a href="#section-34">22. 总结</a></nav><a class="toc-back" href="#top">回到文章顶部 ↑</a></div></aside>
       </div>
       <div class="article-reading-end"><span class="mono">END OF ARTICLE</span><a href="../blog.html">← 返回博客列表</a></div>
-      <nav class="article-adjacent" aria-label="其他文章"><a href="langgraph-browser-use-test-agent.html"><span class="section-kicker">下一篇 →</span><strong>LangGraph + browser-use：一个自然语言驱动的自动化测试 Agent 架构设计</strong><span aria-hidden="true">↗</span></a></nav>
+      <nav class="article-adjacent" aria-label="其他文章"><a href="langgraph-browser-use-test-agent.html"><span class="section-kicker">下一篇 →</span><strong>LangGraph + browser-use：一个自然语言驱动的自动化测试 Agent 架构设计</strong><span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a></nav>
     </main>
     <footer class="site-footer site-footer-compact"><div class="footer-bottom"><span>© <span id="footer-year">2026</span> gxj · 测试与工程手记</span><span class="mono">BUILT WITH CURIOSITY.</span><a class="back-top" href="#top">回到顶部 <span aria-hidden="true">↑</span></a></div></footer>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

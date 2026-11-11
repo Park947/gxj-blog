@@ -16,6 +16,37 @@
 @media(max-width:360px){:root{--gutter:20px}.hero h1{font-size:40px}.hero-art{height:300px}.card-paper{top:145px}.pass-word{font-size:65px}.hero-footnote{flex-direction:column;gap:5px}.reader-toolbar>.mono{display:none}.back-top{margin-left:0}.hero-bottom>span{display:none}.topic-strip{font-size:7px;gap:13px}}
 .hero #hero-title{font-size:clamp(26px,3.7vw,56px);white-space:normal}
 .hero .layout-placeholder{visibility:hidden}
+.icon-arrow{display:inline-block;width:1em;height:1em;vertical-align:-.125em;flex-shrink:0}
+.icon-arrow-up-right{transform:rotate(-45deg)}
+.icon-arrow-down-right{transform:rotate(45deg)}
+.home-page .hero-actions .icon-arrow{width:22px;height:22px;vertical-align:middle}
+@media(max-width:640px){
+  .home-page{--home-viewport-height:100vh}
+  .home-page .hero{min-height:var(--home-viewport-height);grid-template-rows:auto minmax(0,1fr);align-items:start;gap:16px;padding-top:108px;padding-bottom:56px}
+  .home-page .hero .layout-placeholder{display:none}
+  .home-page .eyebrow{margin-bottom:16px}
+  .home-page .hero #hero-title{font-size:clamp(26px,6.7vw,32px);line-height:1.25}
+  .home-page .hero-actions{margin-top:24px;gap:24px}
+  .home-page .hero-actions .text-link{display:inline-flex;align-items:center;min-height:48px}
+  .home-page .hero-art{--home-art-height:clamp(180px,calc(var(--home-viewport-height) - 404px),320px);width:86%;max-width:330px;height:var(--home-art-height);margin:0;align-self:center}
+  .home-page .art-card{height:58%;aspect-ratio:auto;padding:10px}
+  .home-page .card-cyan{top:3%;left:0}
+  .home-page .card-pink{top:22%;left:23%}
+  .home-page .card-paper{top:40%;left:15%}
+  .home-page .art-bar{font-size:7px;padding-bottom:6px}
+  .home-page .diagram-nodes{padding:8px 15px}
+  .home-page .diagram-nodes i{width:24px;height:24px}
+  .home-page .code-art{font-size:9px;line-height:1.5;margin:7px 0}
+  .home-page .card-caption{font-size:6px}
+  .home-page .pass-word{font-size:clamp(40px,min(14vw,calc(var(--home-art-height) * .24)),68px);margin:6px 0}
+  .home-page .pass-word span{font-size:25px}
+  .home-page .art-result{font-size:6px;padding-top:5px}
+  .home-page .art-result>span:last-child{font-size:12px}
+  .home-page .art-top-label{font-size:6px;right:-4%;top:0}
+  .home-page .hero-bottom{bottom:16px;padding-top:12px}
+  .home-page .hero-bottom a{display:inline-flex;align-items:center;min-height:24px}
+}
+@supports(height:100dvh){@media(max-width:640px){.home-page{--home-viewport-height:100dvh}}}
 .home-page{background:var(--ink)}
 .listing-page{min-height:100svh;display:flex;flex-direction:column;background:var(--paper)}
 .listing-page main{flex:1;width:100%;max-width:1400px;margin-inline:auto}
