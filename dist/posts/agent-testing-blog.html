@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="LangGraph Agent 测试笔记：视频创作 Agent 的状态、任务与服务化验收 · gxj 测试与工程手记">
+    <title>LangGraph Agent 测试笔记：视频创作 Agent 的状态、任务与服务化验收 · gxj</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../article.css">
+    <script src="../assets/vendor/mermaid-10.9.5.min.js" defer></script>
+    <script src="../article.js" defer></script>
+  </head>
+  <body class="article-page" id="top">
+    <a class="skip-link" href="#article-content">跳到文章正文</a>
+    <div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
+    <header class="site-header">
+      <a class="brand" href="../index.html" aria-label="gxj 首页">gxj<span>.</span></a>
+      <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
+      <nav id="main-nav" aria-label="主导航"><a href="../index.html">首页</a><a href="../blog.html" class="active" aria-current="location">博客 <span class="nav-count">5</span></a><a href="../projects.html">项目</a></nav>
+      <a class="header-cta" href="../blog.html">阅读手记 <span aria-hidden="true">↗</span></a>
+    </header>
+    <main class="article-main">
+      <div class="article-toolbar">
+        <a class="article-back" href="../blog.html"><span aria-hidden="true">←</span> 返回博客列表</a>
+        <nav class="article-breadcrumb" aria-label="面包屑导航"><a href="../blog.html">技术博客</a><span aria-hidden="true">/</span><span>AI 测试</span></nav>
+      </div>
+      <header class="article-masthead"><p class="section-kicker">GXJ / ENGINEERING NOTES <span class="article-index">03 / 05</span></p><h1>LangGraph Agent 测试笔记：视频创作 Agent 的状态、任务与服务化验收<span class="pink">.</span></h1><div class="article-byline"><span class="article-category-label">AI 测试</span><time datetime="2026-05-13">2026.05.13</time><span>作者 / gxj</span><button class="article-share" id="share-article" type="button">复制链接 <span aria-hidden="true">↗</span></button></div></header>
+      <div class="article-layout">
+        <article class="article-body" id="article-content">
+        <div class="post-container">
+            <h1 id="section-01">LangGraph Agent 测试笔记：视频创作 Agent 的状态、任务与服务化验收</h1>
+<p>我这个 Agent 的核心目标很明确：做一个视频创作助手。它既能帮用户做文生视频，也能做图生视频；既能扩写 prompt、调整风格、补充镜头，也能在用户确认后真正提交生成任务。</p>
+<p>这类 Agent 不能只看“模型回答得像不像”。真正要验收的是：它能不能分清用户意图，能不能记住当前会话，能不能处理多轮修改，能不能在调用外部视频工具前做确认，能不能被前端稳定调用。</p>
+<p>所以这篇文章主要记录我现在这个视频 Agent 的架构，以及我怎么围绕 LangGraph 的状态、分支、异步任务和前端流式输出做测试。</p>
+<hr>
+<h2 id="section-02">一、当前 Agent 架构</h2>
+<p>现在这个视频创作 Agent 已经不是单纯的 CLI 脚本，而是拆成了三层：</p>
+<pre><code class="language-text">前端页面
+  -&gt; POST /tasks
+FastAPI 任务 API
+  -&gt; 后台任务执行
+LangGraph 视频创作 Agent
+  -&gt; LLM / RAG / Memory / LitMedia Tool
+</code></pre>
+<p>前端创建任务后，后端会立刻返回 <code>task_id</code>。Agent 在后台执行，前端通过 SSE 订阅任务事件流，实时看到任务状态。</p>
+<pre><code class="language-text">POST /tasks
+GET  /tasks/{task_id}
+GET  /tasks/{task_id}/events
+</code></pre>
+<p>这个结构把几个边界先拆清楚了：</p>
+<pre><code class="language-text">API 层负责接请求
+Task Store 负责保存任务状态
+Task Runner 负责执行 Agent
+LangGraph 负责业务图和状态流转
+</code></pre>
+<p>以后如果要做分布式，可以把后台线程换成 Celery/RQ，把本地状态换成 Redis 或 Postgres。接口层不用大改。</p>
+<hr>
+<h2 id="section-03">二、LangGraph 主流程</h2>
+<p>当前 Agent 的主链路可以概括为：</p>
+<pre><code class="language-text">memory_retriever
+  -&gt; routing_planner
+  -&gt; rag_retriever?
+  -&gt; route_by_intent
+</code></pre>
+<p><code>routing_planner</code> 是入口规划节点，一次结构化输出同时判断三件事：</p>
+<pre><code class="language-text">route: chat / creative / i2v
+should_retrieve: true / false
+retrieval_query: string | null
+</code></pre>
+<p>也就是说，它既判断用户是普通聊天、文生视频，还是图生视频，也判断本轮是否需要 RAG 检索。</p>
+<p>当前主流程大概是这样：</p>
+<div class="mermaid">
+flowchart TD
+  START([START]) --> MR[memory_retriever]
+  MR --> RP[routing_planner]
+  RP -->|retrieve| RAG[rag_retriever]
+  RP -->|skip| RI[route_by_intent]
+  RAG --> RI
+  RI -->|chat| CHAT[chat_responder]
+  RI -->|creative| CW[creative_worker]
+  RI -->|i2v| AR[asset_resolver]
+  AR --> I2V[i2v_worker]
+  CW --> RAC{route_after_creation}
+  I2V --> RAC
+  RAC -->|tool needed| REF[reflection_worker]
+  RAC -->|no tool| ME[memory_enqueue]
+  REF -->|tool| TE[tool_executor]
+  REF -->|end| ME
+  CHAT --> ME
+  TE --> ME
+  ME --> END([END])
+</div>
+
+<p>这里最重要的是：Agent 不是每一轮都直接生成视频。它会先理解用户意图，再决定是闲聊、补全 prompt、修改已有方案，还是提交工具调用。</p>
+<hr>
+<h2 id="section-04">三、Agent 能处理哪些用户输入</h2>
+<p>这个 Agent 主要覆盖几类请求。</p>
+<p>第一类是能力咨询，比如：</p>
+<pre><code class="language-text">你好
+你能做什么
+你可以帮我生成视频吗
+</code></pre>
+<p>这种情况下，Agent 要自然说明自己是视频创作助手，可以帮用户做文生视频和图生视频，也可以扩写 prompt、设计镜头、调整风格和优化负面词。</p>
+<p>第二类是文生视频，比如：</p>
+<pre><code class="language-text">帮我生成一段雨夜城市街角的小狗视频
+</code></pre>
+<p>Agent 会把用户的一句话扩成更完整的视频 prompt，并结合默认参数，例如比例、清晰度、时长等。</p>
+<p>第三类是图生视频，比如：</p>
+<pre><code class="language-text">用这张图生成一个镜头推进的视频
+</code></pre>
+<p>这时 Agent 会先解析图片资源，再生成适合图生视频的运动描述和镜头语言。</p>
+<p>第四类是多轮修改，比如：</p>
+<pre><code class="language-text">换成新海诚风格
+分辨率改成 1080p
+不要水印
+就按这个生成
+</code></pre>
+<p>这些输入都依赖会话状态。Agent 需要记住当前 prompt、参数、确认状态，以及上一轮用户到底在改什么。</p>
+<hr>
+<h2 id="section-05">四、会话状态怎么保存</h2>
+<p>前端有两个关键字段：</p>
+<pre><code class="language-text">User ID
+Thread ID
+</code></pre>
+<p><code>User ID</code> 表示谁在使用，<code>Thread ID</code> 表示这个用户的哪一段会话。</p>
+<p>如果一直使用：</p>
+<pre><code class="language-text">user_id = demo
+thread_id = demo-thread
+</code></pre>
+<p>Agent 会把它当成同一条对话。用户说“改成更治愈一点”“就用第二个”“确认生成”时，Agent 能根据同一个 <code>thread_id</code> 找回上下文。</p>
+<p>当前线程状态会持久化到：</p>
+<pre><code class="language-text">memory/threads/
+</code></pre>
+<p>每个 <code>thread_id</code> 对应一个状态文件。服务重启后，再使用同一个 <code>thread_id</code>，就能读回之前的 <code>CreativeState</code>。</p>
+<p>这一步对 Agent 服务化很重要。因为前端、API、Worker 不一定永远在同一个进程里，状态必须从“进程内记忆”逐步变成“可恢复的会话状态”。</p>
+<hr>
+<h2 id="section-06">五、为什么 Agent 会慢</h2>
+<p>LangSmith 里最值得看的不是总耗时，而是 token breakdown。</p>
+<p>我观察过一次长会话 trace：</p>
+<pre><code class="language-text">Input: 58.5K
+Output: 12.7K
+Total: 71.2K
+P50: 23.45s
+P99: 58.85s
+</code></pre>
+<p>这说明慢的主要原因不是“构建图”，而是每一轮塞给 LLM 的上下文太大。</p>
+<p>Agent 聊得越久，<code>chat_history</code> 越长。如果每个节点都塞最近 8 到 10 条历史，多个 LLM 节点叠加起来，输入 token 会膨胀得很快。</p>
+<p>所以我对历史做了两层控制：</p>
+<pre><code class="language-text">保存会话时：最多保留最近 12 条 chat_history
+调用节点时：不同节点只读取自己需要的短窗口
+</code></pre>
+<p>这里的关键点是：当前视频 prompt、确认状态、前端参数已经在 <code>params</code> 和 <code>frontend_params</code> 里，不需要每次把完整聊天历史重新塞进模型。</p>
+<hr>
+<h2 id="section-07">六、记忆写入不能阻塞用户响应</h2>
+<p>每轮对话结束后，Agent 都需要更新长期记忆。但记忆抽取本身也可能调用 LLM。</p>
+<p>对用户来说，回复已经生成了，就不应该继续等记忆写入完成。否则体感上就是：Agent 明明答完了，却还卡着不返回。</p>
+<p>现在主链路最后走的是：</p>
+<pre><code class="language-text">memory_enqueue
+</code></pre>
+<p>主流程只负责启动后台写入，然后结束本轮响应。记忆写入失败不会影响本轮回复。</p>
+<p>生产环境里，这一步可以继续演进成：</p>
+<pre><code class="language-text">memory_enqueue -&gt; Redis/Celery -&gt; memory worker
+</code></pre>
+<p>这相当于把“用户响应路径”和“后台维护路径”拆开。对 Agent 来说，这是很重要的延迟优化。</p>
+<hr>
+<h2 id="section-08">七、结构化输出要能容错</h2>
+<p>Agent 里有很多结构化输出，例如意图识别、路由规划、工具调用判断。结构化输出的好处是稳定，坏处是模型稍微跑偏就可能触发校验错误。</p>
+<p>比如模型可能返回：</p>
+<pre><code class="language-text">clarification
+</code></pre>
+<p>但 schema 里希望的是：</p>
+<pre><code class="language-text">clarify
+</code></pre>
+<p>如果不做处理，整个任务会直接失败。</p>
+<p>所以我在 Pydantic schema 层做了归一化，把常见别名映射成系统内部标准值：</p>
+<pre><code class="language-text">clarification -&gt; clarify
+ask_clarification -&gt; clarify
+edit_prompt -&gt; update_prompt
+generate -&gt; create_prompt
+submit -&gt; confirm
+text_to_video -&gt; submit_text_to_video
+i2v -&gt; image_to_video
+replace -&gt; overwrite
+normal -&gt; chat
+</code></pre>
+<p>这类容错很关键。线上 Agent 面对的是自然语言和模型输出，不是严格 API 调用。schema 不能脆到一有同义词就崩。</p>
+<hr>
+<h2 id="section-09">八、反思节点按需运行</h2>
+<p>视频生成属于有副作用的动作。真正提交工具前，Agent 需要确认参数、prompt 和工具调用是否合理。</p>
+<p>所以图里保留了：</p>
+<pre><code class="language-text">reflection_worker
+</code></pre>
+<p>但它不是每一轮都需要跑。</p>
+<p>如果用户只是让 Agent 改 prompt、换风格、补镜头，这一轮没有外部工具调用，就不需要额外反思。只有当 <code>tool_call</code> 准备调用下面这些工具时，才进入反思节点：</p>
+<pre><code class="language-text">submit_text_to_video
+submit_image_to_video
+</code></pre>
+<p>这样既减少一次 LLM 调用，也让图的语义更清楚：只有要执行外部副作用时，才做额外检查。</p>
+<hr>
+<h2 id="section-10">九、前端流式输出流的是什么</h2>
+<p>现在前端使用 SSE：</p>
+<pre><code class="language-text">GET /tasks/{task_id}/events
+</code></pre>
+<p>当前流的是任务事件：</p>
+<pre><code class="language-text">task_created
+task_running
+agent_started
+graph_building
+graph_running
+reply_ready
+state_saved
+task_completed
+task_failed
+</code></pre>
+<p>这解决的是“前端能不能实时看到任务进度”的问题。</p>
+<p>它还不是 token-by-token 的 LLM 流式输出。当前 LangGraph 执行主要还是：</p>
+<pre><code class="language-python">graph.invoke(...)
+</code></pre>
+<p>如果要做到真正的 token 流式输出，需要继续改成：</p>
+<pre><code class="language-python">graph.astream(...)
+</code></pre>
+<p>或者在 LLM 节点内部接流式回调，把 token 事件写进 task event stream。</p>
+<p>我现在先把任务状态流打通，再继续往 token 级流式输出推进。</p>
+<hr>
+<h2 id="section-11">十、测试重点</h2>
+<p>这个 Agent 的测试重点不是证明模型每次都聪明，而是证明系统在多轮会话、模型轻微抖动、工具调用和服务重启后不会断。</p>
+<p>第一类是图路径测试：</p>
+<pre><code class="language-text">chat 是否进入 chat_responder
+creative 是否进入 creative_worker
+i2v 是否先解析图片 URL
+有 tool_call 时是否进入 reflection
+没有 tool_call 时是否跳过 reflection
+</code></pre>
+<p>第二类是任务 API 测试：</p>
+<pre><code class="language-text">create_task 是否生成 task_id
+run_agent_task 是否保存 completed / failed
+同一个 thread_id 是否能保存并读回状态
+</code></pre>
+<p>第三类是结构化容错测试：</p>
+<pre><code class="language-text">clarification 是否归一化成 clarify
+edit_prompt 是否归一化成 update_prompt
+i2v 是否归一化成 image_to_video
+text_to_video 是否归一化成 submit_text_to_video
+</code></pre>
+<p>这些测试的价值在于：不要求模型永远输出最标准的词，但要求系统能接住常见偏差。</p>
+<hr>
+<h2 id="section-12">十一、下一步分布式演进</h2>
+<p>现在这套结构已经接近一个 Agent 服务：</p>
+<pre><code class="language-text">前端
+  -&gt; FastAPI
+  -&gt; Task Store
+  -&gt; Task Runner
+  -&gt; LangGraph Agent
+  -&gt; SSE 返回事件
+</code></pre>
+<p>后面可以按这个顺序继续演进：</p>
+<pre><code class="language-text">1. InMemoryTaskStore -&gt; SQLite/Postgres
+2. 后台线程 -&gt; Celery/RQ Worker
+3. 本地 thread_state 文件 -&gt; LangGraph checkpointer / Postgres
+4. SSE 任务事件 -&gt; token 级流式输出
+5. 单机 Worker -&gt; 多 Worker + 幂等工具调用
+</code></pre>
+<p>这条路线的核心不是一上来就堆分布式组件，而是先把边界抽清楚。只要 API、任务状态、会话状态、Agent 执行器之间的职责稳定，后面替换存储和队列就会自然很多。</p>
+<hr>
+<h2 id="section-13">小结</h2>
+<p>做 Agent 不只是写 prompt。真正让它可用的，是一圈工程护栏：</p>
+<pre><code class="language-text">路由少打模型
+记忆不阻塞响应
+会话能持久化
+历史不能无限膨胀
+结构化输出要能容错
+前端要能看到任务进度
+工具调用前要做确认
+</code></pre>
+<p>这个视频创作 Agent 现在已经具备了服务化的基本形态：前端可以创建任务，后端可以异步执行，LangGraph 可以按状态分支，线程状态可以持久化，用户也能在同一个 <code>thread_id</code> 里持续修改和确认视频方案。</p>
+<p>接下来要继续补的是更完整的分布式任务队列、数据库 checkpointer，以及真正的 token 级流式输出。等这几块补齐后，它就不只是一个本地 Agent，而是一个可以承载多用户请求的视频创作 Agent 服务。</p>
+        </div>
+    </article>
+        <aside class="article-sidebar" aria-label="文章目录"><div class="article-toc"><p class="section-kicker">ON THIS PAGE / 目录</p><nav aria-label="文章章节"><a href="#section-02">一、当前 Agent 架构</a><a href="#section-03">二、LangGraph 主流程</a><a href="#section-04">三、Agent 能处理哪些用户输入</a><a href="#section-05">四、会话状态怎么保存</a><a href="#section-06">五、为什么 Agent 会慢</a><a href="#section-07">六、记忆写入不能阻塞用户响应</a><a href="#section-08">七、结构化输出要能容错</a><a href="#section-09">八、反思节点按需运行</a><a href="#section-10">九、前端流式输出流的是什么</a><a href="#section-11">十、测试重点</a><a href="#section-12">十一、下一步分布式演进</a><a href="#section-13">小结</a></nav><a class="toc-back" href="#top">回到文章顶部 ↑</a></div></aside>
+      </div>
+      <div class="article-reading-end"><span class="mono">END OF ARTICLE</span><a href="../blog.html">← 返回博客列表</a></div>
+      <nav class="article-adjacent" aria-label="其他文章"><a href="langgraph-browser-use-test-agent.html"><span class="section-kicker">← 上一篇</span><strong>LangGraph + browser-use：一个自然语言驱动的自动化测试 Agent 架构设计</strong><span aria-hidden="true">↗</span></a><a href="langsmith-testing-experience.html"><span class="section-kicker">下一篇 →</span><strong>LangSmith 测试经验：Agent 追踪与排查实战</strong><span aria-hidden="true">↗</span></a></nav>
+    </main>
+    <footer class="site-footer site-footer-compact"><div class="footer-bottom"><span>© <span id="footer-year">2026</span> gxj · 测试与工程手记</span><span class="mono">BUILT WITH CURIOSITY.</span><a class="back-top" href="#top">回到顶部 <span aria-hidden="true">↑</span></a></div></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

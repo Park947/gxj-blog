@@ -1,0 +1,59 @@
+.project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.project-card{--project-accent:var(--blue);display:flex;flex-direction:column;min-width:0;padding:28px;border:1px solid var(--line);border-top:4px solid var(--project-accent);border-radius:16px;background:#faf9f6}
+.project-card-pink{--project-accent:var(--pink)}
+.project-card-cream{--project-accent:var(--cream)}
+.project-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
+.project-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:54px;height:54px;background:var(--project-accent);color:var(--ink)}
+.project-icon svg{width:30px;height:30px}
+.project-card-top>.mono{font-size:9px;letter-spacing:.03em;color:var(--muted)}
+.project-card h2{min-height:2.7em;margin:0 0 16px;font-size:23px;font-weight:700;line-height:1.35;letter-spacing:-.025em;overflow-wrap:anywhere}
+.project-description{margin:0 0 26px;font-size:14px;line-height:1.95;color:var(--muted)}
+.project-capabilities{margin-bottom:28px}
+.project-capabilities h3{margin:0 0 14px;font-size:15px;font-weight:650}
+.project-capabilities ul{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
+.project-capabilities li{position:relative;padding-left:16px;font-size:13px;line-height:1.85;overflow-wrap:anywhere}
+.project-capabilities li:before{content:"";position:absolute;top:.72em;left:0;width:5px;height:5px;background:#bd1458}
+.project-capabilities code{font-size:12px}
+.project-card-footer{margin-top:auto}
+.project-card-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.project-card-tags span{padding:5px 10px;border:1px solid var(--line);border-radius:20px;font-size:11px;line-height:1.5;color:var(--muted)}
+.project-repository{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:11px 16px;background:var(--ink);color:var(--paper);font-size:13px;font-weight:600;transition:background .2s,color .2s}
+.project-repository svg{width:18px;height:18px;flex-shrink:0}
+.project-repository>span{margin-left:8px;font-size:17px;line-height:1}
+.project-repository:hover{background:var(--project-accent);color:var(--ink)}
+.projects .project-repository:focus-visible{outline-color:#b1004b}
+@media(min-width:1200px){
+  .projects-page .projects.section-pad{padding-bottom:16px}
+  .projects-page .project-grid{gap:32px}
+  .projects-page .project-card{padding:22px}
+  .projects-page .project-card-top{margin-bottom:14px}
+  .projects-page .project-icon{width:40px;height:40px}
+  .projects-page .project-icon svg{width:26px;height:26px}
+  .projects-page .project-card h2{min-height:0;margin-bottom:12px;font-size:21px;line-height:1.3}
+  .projects-page .project-description{margin-bottom:16px;line-height:1.7}
+  .projects-page .project-capabilities{margin-bottom:18px}
+  .projects-page .project-capabilities h3{margin-bottom:10px}
+  .projects-page .project-capabilities ul{gap:6px}
+  .projects-page .project-capabilities li{line-height:1.65}
+  .projects-page .project-card-tags{gap:6px;margin-bottom:16px}
+  .projects-page .project-card-tags span{padding:4px 8px}
+  .projects-page .project-repository{min-height:44px;padding:10px 14px}
+  .projects-page .site-footer-compact{padding-bottom:12px}
+  .projects-page .footer-bottom{padding-top:10px}
+}
+@media(min-width:1200px) and (max-height:800px){
+  .projects-page .projects.section-pad{padding-bottom:12px}
+  .projects-page .project-card{padding:18px}
+  .projects-page .project-card-top{margin-bottom:10px}
+  .projects-page .project-icon{width:32px;height:32px}
+  .projects-page .project-icon svg{width:22px;height:22px}
+  .projects-page .project-card h2{margin-bottom:10px}
+  .projects-page .project-description{margin-bottom:12px}
+  .projects-page .project-capabilities{margin-bottom:12px}
+  .projects-page .project-card-tags{margin-bottom:12px}
+  .projects-page .site-footer-compact{padding-bottom:4px}
+}
+@media(min-width:1600px){.projects-page .project-grid{gap:48px}}
+@media(max-width:1199px){.project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.project-grid{grid-template-columns:1fr;gap:20px}.project-card h2{min-height:0}}
+@media(max-width:640px){.project-card{padding:24px}.project-card h2{font-size:22px}.project-card-top{margin-bottom:24px}.project-card-top>.mono{font-size:8px}}

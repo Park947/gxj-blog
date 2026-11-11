@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111111">
+    <meta name="description" content="gxj 的测试与工程手记。探索 AI 测试、自动化测试与 Agent 工程，在每一次实践里，让想法经得起验证。">
+    <title>项目 · gxj</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="projects.css">
+    <script src="data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="listing-page projects-page" id="top">
+    <a class="skip-link" href="#projects">跳到项目内容</a>
+    <div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="gxj 首页">gxj<span>.</span></a>
+      <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="main-nav"><span></span><span></span></button>
+      <nav id="main-nav" aria-label="主导航">
+        <a href="index.html">首页</a>
+        <a href="blog.html">博客 <span class="nav-count">5</span></a>
+        <a href="projects.html" class="active" aria-current="page">项目</a>
+      </nav>
+      <a class="header-cta" href="blog.html">阅读手记 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main>
+      <section class="projects section-pad" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading"><div><p class="section-kicker"><span>02 /</span> BUILT TO EXPLORE</p><h1 id="projects-title">项目<span class="blue">.</span></h1></div><p class="section-intro">点击项目访问 GitHub 仓库</p></div>
+        <div class="project-grid">
+          <article class="project-card project-card-cyan" aria-labelledby="playwright-project-title">
+            <div class="project-card-top"><span class="project-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="21" rx="2"/><path d="M3 11h26M8 8h1m3 0h1m0 8-4 3 4 3m6-6 4 3-4 3"/></svg></span><span class="mono">01 / AUTOMATION</span></div>
+            <h2 id="playwright-project-title">my-playwright-automation</h2>
+            <p class="project-description">基于 Python、Playwright 和 Pytest 的自动化测试框架，支持 UI 与 API 测试。采用 Page Object 模式组织页面和用例，集成多环境配置、测试报告与通知。</p>
+            <div class="project-capabilities">
+              <h3>核心特性</h3>
+              <ul>
+                <li>Playwright 页面自动化与 requests 接口测试</li>
+                <li>Page Object Model 页面对象封装</li>
+                <li>开发、预发布、生产多环境配置</li>
+                <li>Allure 测试报告与统一日志</li>
+                <li>钉钉、邮件测试结果通知</li>
+              </ul>
+            </div>
+            <div class="project-card-footer">
+              <div class="project-card-tags" aria-label="技术栈"><span>Python</span><span>Playwright</span><span>Pytest</span><span>Allure</span></div>
+              <a class="project-repository" href="https://github.com/Park947/my-playwright-automation" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 my-playwright-automation 的 GitHub 仓库"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.94.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.64 0c2.15-1.46 3.1-1.15 3.1-1.15.61 1.55.23 2.7.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.64 5.28-5.15 5.56.4.35.76 1.03.76 2.08v3.09c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z"/></svg>GitHub 仓库 <span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+          <article class="project-card project-card-pink" aria-labelledby="agent-notes-project-title">
+            <div class="project-card-top"><span class="project-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="3" width="10" height="7" rx="1"/><rect x="2" y="22" width="10" height="7" rx="1"/><rect x="20" y="22" width="10" height="7" rx="1"/><path d="M16 10v6M7 22v-6h18v6"/></svg></span><span class="mono">02 / AI AGENT</span></div>
+            <h2 id="agent-notes-project-title">agent-learning-notes</h2>
+            <p class="project-description">AI Agent 开发学习笔记与实战项目仓库，记录 LangGraph、LangChain、LangSmith 的学习进度和问题排查经验，包含视频创作 Agent 的实现。</p>
+            <div class="project-capabilities">
+              <h3>内容覆盖</h3>
+              <ul>
+                <li>LangGraph 状态机编排与多轮会话管理</li>
+                <li>LangChain 模型调用与结构化输出</li>
+                <li>LangSmith Agent 追踪与排查实战</li>
+                <li>视频创作助手 <code>image_agent.py</code></li>
+                <li>本地知识库检索与长期记忆</li>
+              </ul>
+            </div>
+            <div class="project-card-footer">
+              <div class="project-card-tags" aria-label="技术栈"><span>LangGraph</span><span>LangChain</span><span>LangSmith</span><span>AI Agent</span></div>
+              <a class="project-repository" href="https://github.com/Park947/my-agent-learning-notes" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 agent-learning-notes 的 GitHub 仓库"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.94.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.64 0c2.15-1.46 3.1-1.15 3.1-1.15.61 1.55.23 2.7.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.64 5.28-5.15 5.56.4.35.76 1.03.76 2.08v3.09c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z"/></svg>GitHub 仓库 <span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+          <article class="project-card project-card-cream" aria-labelledby="frameforge-project-title">
+            <div class="project-card-top"><span class="project-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="26" height="19" rx="2"/><path d="m3 10 24-7 2 7M9 8l4-5m4 3 4-5M3 16h26m-16 4 7 3-7 3z"/></svg></span><span class="mono">03 / VIDEO AGENT</span></div>
+            <h2 id="frameforge-project-title">frameforge-agent</h2>
+            <p class="project-description">AI 视频创作 Agent 开发与测试项目，将自然语言需求串联为意图路由、分镜与 Prompt 生成、人工确认和异步视频任务，覆盖业务逻辑、接口与 UI 测试。</p>
+            <div class="project-capabilities">
+              <h3>核心能力</h3>
+              <ul>
+                <li>文生视频、图生视频意图路由</li>
+                <li>Seedance Skill 分镜与 Prompt 结构检查</li>
+                <li>多轮修改、人工确认与异步任务</li>
+                <li>SSE 进度推送与 SQLite 状态持久化</li>
+                <li>Pytest、Playwright 测试与 Mock 视频服务</li>
+              </ul>
+            </div>
+            <div class="project-card-footer">
+              <div class="project-card-tags" aria-label="技术栈"><span>Python</span><span>AI Agent</span><span>Pytest</span><span>Playwright</span></div>
+              <a class="project-repository" href="https://github.com/Park947/frameforge-agent" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 frameforge-agent 的 GitHub 仓库"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.94.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.64 0c2.15-1.46 3.1-1.15 3.1-1.15.61 1.55.23 2.7.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.64 5.28-5.15 5.56.4.35.76 1.03.76 2.08v3.09c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z"/></svg>GitHub 仓库 <span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer site-footer-compact">
+      <div class="footer-bottom">
+        <span>© <span id="footer-year">2026</span> gxj · 测试与工程手记</span>
+        <span class="mono">BUILT WITH CURIOSITY.</span>
+        <a class="back-top" href="#top">回到顶部 <span aria-hidden="true">↑</span></a>
+      </div>
+    </footer>
+
+  </body>
+</html>
